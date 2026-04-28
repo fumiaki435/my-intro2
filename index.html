@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>運行情報ダッシュボード</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="header-container">
+            <div class="logo">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2C6.48 2 2 6.48 2 12C2 17.52 6.48 22 12 22C17.52 22 22 17.52 22 12C22 6.48 17.52 2 12 2ZM11 19.93C7.06 19.43 4 16.05 4 12C4 7.95 7.06 4.57 11 4.07V19.93ZM13 4.07C16.94 4.57 20 7.95 20 12C20 16.05 16.94 19.43 13 19.93V4.07Z" fill="currentColor"/>
+                </svg>
+                <h1>Train Status Dashboard</h1>
+            </div>
+            <button id="settingsBtn" class="icon-btn" title="設定">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                </svg>
+            </button>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="summary-card">
+            <div class="summary-header">
+                <h2>遅延・運行情報</h2>
+                <div class="last-updated" id="lastUpdated">更新日時: --:--</div>
+            </div>
+            <p class="summary-description">
+                公共交通機関の遅延状況をリアルタイムで確認できます。<br>
+                勤怠管理の参考情報としてご活用ください。
+            </p>
+            <div class="controls">
+                <button id="refreshBtn" class="primary-btn">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="refresh-icon">
+                        <polyline points="23 4 23 10 17 10"></polyline>
+                        <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+                    </svg>
+                    更新する
+                </button>
+            </div>
+        </div>
+
+        <div id="loading" class="loading-state hidden">
+            <div class="spinner"></div>
+            <p>データを取得中...</p>
+        </div>
+
+        <div id="errorMessage" class="error-state hidden">
+            <div class="error-icon">⚠️</div>
+            <p id="errorText">エラーが発生しました。</p>
+        </div>
+
+        <div id="noDelayMessage" class="success-state hidden">
+            <div class="success-icon">✨</div>
+            <p>現在、遅延が発生している路線はありません。</p>
+        </div>
+
+        <div class="delay-list-container">
+            <ul id="delayList" class="delay-list">
+                <!-- 遅延情報がここに挿入されます -->
+            </ul>
+        </div>
+    </main>
+
+    <!-- APIキー設定モーダル -->
+    <div id="settingsModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>設定</h2>
+                <button id="closeModalBtn" class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="form-group">
+                    <label for="apiKeyInput">ODPT アクセストークン</label>
+                    <input type="password" id="apiKeyInput" placeholder="アクセストークンを入力してください">
+                    <p class="help-text">
+                        公共交通オープンデータセンター(ODPT)のデータを取得するためのアクセストークンです。<br>
+                        入力したキーはブラウザにのみ保存され、外部に送信されることはありません。（セキュリティ上安全です）
+                    </p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="saveSettingsBtn" class="primary-btn">保存する</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
