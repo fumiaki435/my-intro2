@@ -62,9 +62,19 @@
         </div>
 
         <div class="delay-list-container">
-            <ul id="delayList" class="delay-list">
-                <!-- 遅延情報がここに挿入されます -->
-            </ul>
+            <div id="selectedLinesSection" class="list-section hidden">
+                <h3 class="section-title">登録済みの路線</h3>
+                <ul id="selectedList" class="delay-list">
+                    <!-- 選択した路線の情報がここに挿入されます -->
+                </ul>
+            </div>
+            
+            <div id="otherDelaysSection" class="list-section hidden">
+                <h3 class="section-title">その他の遅延路線</h3>
+                <ul id="delayList" class="delay-list">
+                    <!-- その他の遅延情報がここに挿入されます -->
+                </ul>
+            </div>
         </div>
     </main>
 
@@ -83,6 +93,13 @@
                         公共交通オープンデータセンター(ODPT)のデータを取得するためのアクセストークンです。<br>
                         入力したキーはブラウザにのみ保存され、外部に送信されることはありません。（セキュリティ上安全です）
                     </p>
+                </div>
+                <div class="form-group">
+                    <label>お気に入り路線の設定</label>
+                    <p class="help-text">常に表示しておきたい路線を選択してください（アクセストークン設定後に選択可能になります）。</p>
+                    <div id="lineSelectionContainer" class="line-selection-container">
+                        <div class="empty-lines-msg">データを取得後、ここに路線一覧が表示されます。</div>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">

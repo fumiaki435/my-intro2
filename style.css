@@ -17,6 +17,10 @@
     --status-stop-text: #854d0e;
     --status-info-bg: #e0f2fe;
     --status-info-text: #0369a1;
+    --status-normal-bg: #dcfce7;
+    --status-normal-text: #166534;
+    --status-minor-bg: #ffedd5;
+    --status-minor-text: #c2410c;
 }
 
 * {
@@ -189,6 +193,19 @@ body {
     margin-top: 1rem;
 }
 
+.list-section {
+    margin-bottom: 2rem;
+}
+
+.section-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
 .delay-list {
     list-style: none;
     display: flex;
@@ -241,6 +258,24 @@ body {
 .status-badge.info {
     background-color: var(--status-info-bg);
     color: var(--status-info-text);
+}
+
+.status-badge.normal {
+    background-color: var(--status-normal-bg);
+    color: var(--status-normal-text);
+}
+
+.status-badge.minor {
+    background-color: var(--status-minor-bg);
+    color: var(--status-minor-text);
+}
+
+.delay-item.normal {
+    border-left-color: var(--status-normal-text);
+}
+
+.delay-item.minor {
+    border-left-color: var(--status-minor-text);
 }
 
 .delay-text {
@@ -336,6 +371,48 @@ body {
     font-size: 0.75rem;
     color: var(--text-secondary);
     line-height: 1.5;
+    margin-bottom: 0.5rem;
+}
+
+.line-selection-container {
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid var(--border-color);
+    border-radius: 0.375rem;
+    padding: 0.5rem;
+    background-color: var(--bg-color);
+}
+
+.line-option {
+    display: flex;
+    align-items: center;
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.line-option:hover {
+    background-color: var(--surface-color);
+}
+
+.line-option input[type="checkbox"] {
+    width: auto;
+    margin-right: 0.75rem;
+    cursor: pointer;
+}
+
+.line-option span {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.empty-lines-msg {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    text-align: center;
+    padding: 1rem;
 }
 
 .modal-footer {
