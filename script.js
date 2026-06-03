@@ -77,7 +77,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (autoRefreshInterval) clearInterval(autoRefreshInterval);
         autoRefreshInterval = setInterval(() => {
             fetchTrainInfo(apiKey, true);
-        }, 5 * 60 * 1000); // 5 minutes
+        }, 60 * 1000); // 1 minute
     }
 
     // Modal Handling
