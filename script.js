@@ -169,7 +169,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (!isAutoRefresh) showLoading();
         
         try {
-            const response = await fetch(`${API_ENDPOINT}?acl:consumerKey=${apiKey}`);
+            const response = await fetch(`${API_ENDPOINT}?acl:consumerKey=${apiKey}`, { cache: 'no-store' });
             
             if (!response.ok) {
                 throw new Error(`APIリクエストに失敗しました (${response.status})。アクセストークンが正しいか確認してください。`);
@@ -185,8 +185,12 @@ document.addEventListener('DOMContentLoaded', () => {
             lastUpdated.textContent = `更新日時: ${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
             
         } catch (error) {
-            if (!isAutoRefresh) showError(error.message);
-            else console.error('Auto-refresh failed:', error);
+            if (!isAutoRefresh) {
+                showError(error.message);
+            } else {
+                console.error('Auto-refresh failed:', error);
+                lastUpdated.textContent = `更新失敗: ${new Date().getHours().toString().padStart(2, '0')}:${new Date().getMinutes().toString().padStart(2, '0')}`;
+            }
         }
     }
 
@@ -270,18 +274,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 // Check status
                 if (!text) {
-                    status = 'delay';
+                    status = 'normal';
                 } else {
                     const isNormal = NORMAL_TEXTS.some(normalText => descText.includes(normalText));
                     const isMinor = MINOR_TEXTS.some(minorText => descText.includes(minorText));
                     const isStop = descText.includes('見合') || descText.includes('運休');
-                    
-                    if (isNormal) {
+                    const isDelay = descText.includes('遅延') || descText.includes('遅れ') || descText.includes('乱れ');
+
+                    if (isStop) {
+                        status = 'stop';
+                    } else if (isNormal) {
                         status = 'normal';
                     } else if (isMinor) {
                         status = 'minor';
-                    } else if (isStop) {
-                        status = 'stop';
+                    } else if (isDelay) {
+                        status = 'delay';
+                    } else {
+                        status = 'normal';
                     }
                 }
             }
@@ -308,18 +317,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
             let status = 'delay';
             if (!text) {
-                status = 'delay';
+                status = 'normal';
             } else {
                 const isNormal = NORMAL_TEXTS.some(normalText => descText.includes(normalText));
                 const isMinor = MINOR_TEXTS.some(minorText => descText.includes(minorText));
                 const isStop = descText.includes('見合') || descText.includes('運休');
-                
-                if (isNormal) {
+                const isDelay = descText.includes('遅延') || descText.includes('遅れ') || descText.includes('乱れ');
+
+                if (isStop) {
+                    status = 'stop';
+                } else if (isNormal) {
                     status = 'normal';
                 } else if (isMinor) {
                     status = 'minor';
-                } else if (isStop) {
-                    status = 'stop';
+                } else if (isDelay) {
+                    status = 'delay';
+                } else {
+                    status = 'normal';
                 }
             }
 
